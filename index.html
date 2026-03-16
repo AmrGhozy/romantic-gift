@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eid Gift ❤️</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Segoe UI;
+      text-align: center;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(270deg, #fff1f2, #ffe4e6, #fecdd3, #fff1f2);
+      background-size: 400% 400%;
+      animation: bg 12s infinite;
+      color: #881337;
+      overflow: hidden;
+      overflow-y: auto;
+      padding: 15px;
+      transition: color 3s ease;
+    }
+
+    @keyframes bg {
+      0% {
+        background-position: 0%
+      }
+
+      50% {
+        background-position: 100%
+      }
+
+      100% {
+        background-position: 0%
+      }
+    }
+
+    .giftBox {
+      background: white;
+      padding: 35px;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, .1);
+      width: 100%;
+      max-width: 420px;
+      transition: .6s;
+    }
+
+    .giftBox.open {
+      transform: scale(.8) rotateY(90deg);
+      opacity: 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 18px;
+      border-radius: 15px;
+      border: 1px solid #fecdd3;
+      margin-top: 20px;
+      font-size: 20px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      font-size: 20px;
+      background: linear-gradient(45deg, #fb7185, #f43f5e);
+      color: white;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(244, 63, 94, .3);
+    }
+
+    button:active {
+      transform: scale(.95);
+    }
+
+    .main {
+      display: none;
+      width: 100%;
+      max-width: 440px;
+      background: white;
+      padding: 25px;
+      border-radius: 25px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, .1);
+    }
+
+    #noBtn {
+      transition: .25s;
+      position: absolute;
+    }
+
+    #yesBtn {
+      background: linear-gradient(45deg, #16a34a, #22c55e);
+      position: absolute;
+      left: 20px;
+    }
+
+    .title {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #be123c;
+      transition: color 3s ease;
+    }
+
+    .loveCard {
+      background: #fff1f2;
+      padding: 22px;
+      border-radius: 20px;
+      margin-top: 15px;
+      line-height: 32px;
+      font-size: 20px;
+      min-height: 120px;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .popup.active {
+      display: flex;
+    }
+
+    .popupBox {
+      background: white;
+      padding: 30px;
+      border-radius: 25px;
+      width: 100%;
+      max-width: 380px;
+      font-size: 22px;
+      line-height: 35px;
+      animation: pop .3s;
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(.7);
+        opacity: 0
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1
+      }
+    }
+
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 20px;
+      animation: rise 6s linear;
+      opacity: .7;
+    }
+
+    @keyframes rise {
+      to {
+        transform: translateY(-110vh);
+        opacity: 0;
+      }
+    }
+
+    .bubble {
+      position: fixed;
+      bottom: -50px;
+      font-size: 12px;
+      opacity: 0.5;
+      animation: bubbleRise linear forwards;
+    }
+
+    @keyframes bubbleRise {
+      to {
+        transform: translateY(-120vh);
+        opacity: 0;
+      }
+    }
+
+    @media(max-width:420px) {
+      .title {
+        font-size: 24px;
+      }
+
+      .loveCard {
+        font-size: 18px;
+        line-height: 30px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 16px;
+      }
+    }
+
+    #tickerBar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 240, 245, 0.95);
+      padding: 12px 0;
+      text-align: center;
+      font-size: 18px;
+      color: #be123c;
+      box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    #tickerText {
+      display: inline-block;
+      opacity: 0;
+      transition: opacity 0.8s;
+    }
+
+    @media(max-width:420px) {
+      #tickerBar {
+        font-size: 16px;
+        padding: 10px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="giftBox">
+    <h2>🎁 اي هي اول سنة لينا مع بعض ؟</h2>
+    <input id="pass">
+    <button onclick="login()">فتح الهدية</button>
+  </div>
+
+  <div class="main">
+    <div class="title">عيد سعيد يا حبيبتي ❤️</div>
+    <button onclick="fire()">اضغطي للمفاجأة ✨</button>
+    <div class="loveCard" id="typingText"></div>
+
+    <button onclick="openMsg(1)">اول مرة كلمتك 💬</button>
+    <button onclick="openMsg(2)">ليه بحبك ❤️</button>
+    <button onclick="openMsg(3)">رسالة العيد 🎁</button>
+    <button onclick="openMsg(4)">مفاجأة ✨</button>
+
+    <div id="daysTogether"></div>
+
+    <div class="loveCard">
+      <h3>سؤال مهم 😅</h3>
+      <p style="margin-top:10px">هل بتحبيني ؟</p>
+      <div style="position:relative;height:120px;margin-top:15px">
+        <button id="yesBtn" style="width:120px;">اه ❤️</button>
+        <button id="noBtn" style="width:120px;right:20px;">لا 😅</button>
+      </div>
+    </div>
+    <button onclick="secret()">لو زعلانة مني اضغطي هنا</button>
+  </div>
+
+  <div class="popup" id="popup">
+    <div class="popupBox">
+      <div id="text"></div>
+      <button onclick="closeMsg()">اغلاق</button>
+    </div>
+  </div>
+
+  <div id="player" style="position:absolute;top:-1000px"></div>
+  <audio id="heartBeat" loop>
+    <source src="data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAA..." type="audio/mpeg">
+  </audio>
+  <div id="tickerBar">
+    <span id="tickerText"></span>
+  </div>
+  <script>
+    /* YouTube API */
+    let player;
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', { height: '0', width: '0', videoId: 'FaC0qadd3j8', playerVars: { loop: 1, playlist: 'FaC0qadd3j8' } });
+    }
+    function startMusic() { player.setVolume(0); player.playVideo(); let v = 0; let fade = setInterval(() => { v += 3; player.setVolume(v); if (v >= 60) clearInterval(fade); }, 200); }
+
+    /* Login */
+    function login() {
+      let pass = $("#pass").val();
+      if (pass == "2022") {
+        $(".giftBox").addClass("open");
+        setTimeout(() => {
+          $(".giftBox").hide();
+          $(".main").fadeIn();
+          startMusic();
+          typeText();
+          floatingHearts();
+          floatingBubbles();
+          colorShift();
+          fire();
+          document.getElementById("heartBeat").play();
+        }, 500);
+      } else { alert("غلط 😅"); }
+    }
+
+    /* Typing text */
+    let message = `عارف اني كنت مقصر معاكي الفتره اللي فاتت حقك عليا كان غصب عني متزعليش مني وانت عارفاني اكيد مكنتش كدا
+
+كل سنه وانت طيبه وبخير يا جنتي ويا رب دايما مع بعض واشوفك احسن الناس وان شاء الله نقضي بقيه اعيادنا مع بعض لو انت حابه تكملي معايا اكيد مش هجبرك علي شيء مش حاباه وانا هحب الخير ليكي ايا كان بيا او من غيري ولو انه هيكون صعب عليا بس علشانك كل حاجه تهون
+
+ودي هديه صغنونه عملتها علشانك يا اجمل بنوته ❤️
+
+بحبك ❤️`;
+    function typeText() { let i = 0; let speed = 50; function typing() { if (i < message.length) { if (message[i] == "\n") $("#typingText").append("<br><br>"); else $("#typingText").append(message[i]); i++; setTimeout(typing, speed); } } typing(); }
+
+    /* Popup messages */
+    let msg = {
+      1: `فاكرة اول مرة اتكلمنا ؟<br>مكنتش متوقع تبقي<br>اهم شخص في حياتي ❤️`,
+      2: `بحبك علشان طيبتك<br>بحبك علشان ضحكتك<br>بحبك علشان انك انتي ❤️`,
+      3: `كل عيد وانتي سعادتي<br>وكل سنة وانتي اقرب انسانة لقلبي ❤️`,
+      4: `يمكن مش عارف المستقبل فيه ايه<br>بس عارف اني عايزك تكوني جزء منه ✨`
+    };
+    function openMsg(id) { $("#text").html(msg[id]); $("#popup").addClass("active"); fire(); }
+    function closeMsg() { $("#popup").removeClass("active"); }
+
+    /* Floating hearts */
+    function floatingHearts() {
+      setInterval(() => {
+        let heart = $("<div>").addClass("heart").html("❤️");
+        heart.css({ left: Math.random() * 100 + "%", fontSize: (15 + Math.random() * 20) + "px" });
+        $("body").append(heart);
+        setTimeout(() => heart.remove(), 6000);
+      }, 600);
+    }
+
+    /* Floating bubbles */
+    function floatingBubbles() {
+      setInterval(() => {
+        let bubble = $("<div>").addClass("bubble").html("💖");
+        bubble.css({ left: Math.random() * 100 + "%", fontSize: (12 + Math.random() * 12) + "px", animationDuration: (5 + Math.random() * 5) + "s" });
+        $("body").append(bubble);
+        setTimeout(() => bubble.remove(), 7000);
+      }, 500);
+    }
+
+    /* Color shift for texts */
+    function colorShift() {
+      setInterval(() => {
+        let colors = ["#f43f5e", "#fb7185", "#be123c", "#ec4899", "#f472b6", "#db2777"];
+        $(".title, #typingText, .loveCard").css("color", colors[Math.floor(Math.random() * colors.length)]);
+      }, 2000);
+    }
+
+    /* Confetti */
+    function fire() { confetti({ particleCount: 100, spread: 70 }); }
+
+    /* Enter key for login */
+    $("#pass").keypress(function (e) { if (e.which == 13) login(); });
+
+    /* Days together */
+    let startDate = new Date("2022-11-01");
+    let today = new Date();
+    let diff = today - startDate;
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    let months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+    $("#daysTogether").html("عدى " + months + " شهر واحنا مع بعض ❤️");
+
+    /* Yes/No buttons */
+    let no = document.getElementById("noBtn");
+    no.addEventListener("mouseover", moveNo);
+    no.addEventListener("touchstart", moveNo);
+    function moveNo() {
+      let x = Math.random() * 200;
+      let y = Math.random() * 80;
+      no.style.left = x + "px";
+      no.style.top = y + "px";
+      no.innerText = ["😅", "😜", "😂", "🙈"][Math.floor(Math.random() * 4)];
+    }
+    $("#yesBtn").click(function () {
+      confetti({ particleCount: 200, spread: 120 });
+      document.getElementById("heartBeat").play();
+      alert("كنت عارف ❤️");
+    });
+
+    /* Secret button */
+    function secret() { alert("حقك عليا ❤️"); }
+    const tickerMessages = [
+      "كل يوم بحبك أكتر من اليوم اللي قبله ❤️",
+      "وجودك في حياتي بيخلي كل شيء أجمل ✨",
+      "أنتي سر سعادتي وضحكتي 💖",
+      "معك كل لحظة بتكون مختلفه واجمل 🌹",
+      "وجودك اجمل شيء ف حياتي 😍",
+      "كل عيد وانتِ أجمل هدية في حياتي 🎁",
+      "مهما طال الزمن قلبي معاكي ❤️",
+      "أنتي قلبي وروحي وكل حاجة حلوة في حياتي 💕",
+      "ضحكتك مفيش اجمل منها 🎶",
+      "معاكي الأيام بتحلى وتكون أجمل ✨"
+    ];
+
+    let tickerIndex = 0;
+    const tickerText = document.getElementById("tickerText");
+
+    function showNextTicker() {
+      tickerText.style.opacity = 0; // fade out
+      setTimeout(() => {
+        tickerText.textContent = tickerMessages[tickerIndex];
+        tickerText.style.opacity = 1; // fade in
+        tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+      }, 800);
+    }
+
+    // initial display
+    showNextTicker();
+
+    // change every 4 seconds
+    setInterval(showNextTicker, 4000);
+  </script>
+</body>
+
+</html>
